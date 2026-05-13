@@ -17,48 +17,36 @@
     }
 
     .container {
-      max-width: 900px;
+      max-width: 1000px;
       margin: 0 auto;
       padding: 32px 16px;
     }
 
     .hero {
       background: #ffffff;
-      border-radius: 20px;
-      padding: 32px;
+      border-radius: 22px;
+      padding: 34px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.08);
       margin-bottom: 24px;
     }
 
-    .badge {
-      display: inline-block;
-      background: #e0f2fe;
-      color: #0369a1;
-      padding: 8px 12px;
-      border-radius: 999px;
-      font-weight: bold;
-      font-size: 14px;
-      margin-bottom: 16px;
-    }
-
     h1 {
       margin: 0 0 12px;
-      font-size: 42px;
-    }
-
-    p {
-      line-height: 1.6;
+      font-size: 44px;
+      letter-spacing: -1px;
     }
 
     .subtitle {
       color: #64748b;
       font-size: 18px;
-      margin-bottom: 0;
+      line-height: 1.6;
+      margin: 0;
+      max-width: 760px;
     }
 
     .search-box {
       background: #ffffff;
-      border-radius: 20px;
+      border-radius: 22px;
       padding: 24px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.08);
       margin-bottom: 24px;
@@ -66,7 +54,7 @@
 
     .form-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr auto;
+      grid-template-columns: 1fr auto;
       gap: 14px;
       align-items: end;
     }
@@ -78,10 +66,9 @@
     }
 
     input,
-    select,
     button {
       width: 100%;
-      padding: 13px 14px;
+      padding: 14px 15px;
       border-radius: 12px;
       border: 1px solid #cbd5e1;
       font-size: 16px;
@@ -94,91 +81,122 @@
       font-weight: bold;
       cursor: pointer;
       white-space: nowrap;
+      padding-left: 24px;
+      padding-right: 24px;
     }
 
     button:hover {
       background: #1d4ed8;
     }
 
-    .results-title {
+    .quick-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .quick-links button {
+      width: auto;
+      background: #eff6ff;
+      color: #1d4ed8;
+      font-size: 14px;
+      padding: 10px 13px;
+    }
+
+    .quick-links button:hover {
+      background: #dbeafe;
+    }
+
+    .map-section {
+      background: #ffffff;
+      border-radius: 22px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    .map-head {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 12px;
-      margin: 8px 4px 14px;
+      margin-bottom: 14px;
     }
 
-    .results-title h2 {
+    .map-head h2 {
       margin: 0;
+      font-size: 24px;
     }
 
-    .hint {
-      color: #64748b;
-      font-size: 14px;
-    }
-
-    .results {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px;
-    }
-
-    .card {
-      background: #ffffff;
-      border-radius: 18px;
-      padding: 20px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.07);
-    }
-
-    .card h3 {
-      margin: 0 0 8px;
-    }
-
-    .card p {
-      margin: 0 0 16px;
-      color: #64748b;
-    }
-
-    .card a {
-      display: inline-block;
+    .map-head a {
       text-decoration: none;
       background: #eff6ff;
       color: #1d4ed8;
       font-weight: bold;
-      padding: 10px 12px;
+      padding: 10px 13px;
       border-radius: 999px;
-      margin-right: 8px;
-      margin-bottom: 8px;
+      white-space: nowrap;
     }
 
-    .empty {
-      grid-column: 1 / -1;
-      background: #ffffff;
-      border: 1px dashed #cbd5e1;
+    .map-wrap {
+      width: 100%;
+      height: 560px;
       border-radius: 18px;
-      padding: 28px;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+      background: #f8fafc;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .empty-map {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       text-align: center;
       color: #64748b;
+      padding: 30px;
+      line-height: 1.6;
     }
 
-    .info {
-      background: #fff7ed;
-      border: 1px solid #fed7aa;
-      color: #9a3412;
-      border-radius: 16px;
-      padding: 16px;
-      margin-top: 20px;
+    .note {
+      margin-top: 12px;
+      color: #64748b;
       font-size: 14px;
+      line-height: 1.5;
     }
 
     @media (max-width: 700px) {
-      .form-grid,
-      .results {
+      .form-grid {
         grid-template-columns: 1fr;
+      }
+
+      .map-head {
+        display: block;
+      }
+
+      .map-head a {
+        display: inline-block;
+        margin-top: 12px;
       }
 
       h1 {
         font-size: 34px;
+      }
+
+      .hero,
+      .search-box,
+      .map-section {
+        padding: 22px;
+      }
+
+      .map-wrap {
+        height: 480px;
       }
     }
   </style>
@@ -186,11 +204,10 @@
 <body>
   <main class="container">
     <section class="hero">
-      <div class="badge">Intranet-Idee</div>
       <h1>Pausenfinder</h1>
       <p class="subtitle">
-        Gib deine PLZ ein und finde schnell passende Orte für die Mittagspause:
-        Restaurants, Cafés, Bäckereien, Supermärkte und mehr.
+        Gib deine PLZ ein und sieh direkt auf der Karte, welche Orte für die Pause in der Nähe sind:
+        Restaurants, Cafés, Bäckereien, Supermärkte, Snacks und Take-away.
       </p>
     </section>
 
@@ -201,144 +218,76 @@
           <input id="zipInput" type="text" placeholder="z. B. 80331" required />
         </div>
 
-        <div>
-          <label for="categoryInput">Was suchst du?</label>
-          <select id="categoryInput">
-            <option value="mittagessen">Mittagessen</option>
-            <option value="restaurant">Restaurant</option>
-            <option value="cafe">Café</option>
-            <option value="baeckerei">Bäckerei</option>
-            <option value="supermarkt">Supermarkt</option>
-            <option value="snack">Snack / Kiosk</option>
-            <option value="vegetarisch">Vegetarisch</option>
-            <option value="vegan">Vegan</option>
-          </select>
-        </div>
-
-        <button type="submit">Suchen</button>
+        <button type="submit">Karte anzeigen</button>
       </form>
 
-      <div class="info">
-        Diese erste Version nutzt Google-Maps-Suchlinks. Dadurch funktioniert sie zuverlässig auf GitHub Pages,
-        ohne API-Key und ohne Server.
+      <div class="quick-links">
+        <button type="button" data-query="Essen Restaurant Café Bäckerei Supermarkt Take Away">Alles anzeigen</button>
+        <button type="button" data-query="Restaurant Mittagessen Take Away">Mittagessen</button>
+        <button type="button" data-query="Café Bäckerei Kaffee">Café & Bäckerei</button>
+        <button type="button" data-query="Supermarkt Lebensmittel">Supermarkt</button>
+        <button type="button" data-query="Vegan vegetarisch Mittagessen">Vegan / Vegetarisch</button>
       </div>
     </section>
 
-    <div class="results-title">
-      <h2>Empfehlungen</h2>
-      <span id="resultCount" class="hint">Noch keine Suche gestartet</span>
-    </div>
+    <section class="map-section">
+      <div class="map-head">
+        <h2 id="mapTitle">Karte</h2>
+        <a id="openMapsLink" href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer">In Google Maps öffnen</a>
+      </div>
 
-    <section id="results" class="results">
-      <div class="empty">Gib eine PLZ ein und starte die Suche.</div>
+      <div class="map-wrap" id="mapWrap">
+        <div class="empty-map">
+          Gib oben eine PLZ ein. Danach erscheint hier direkt die Karte mit passenden Suchergebnissen.
+        </div>
+      </div>
+
+      <p class="note">
+        Hinweis: Diese Version nutzt eine eingebettete Google-Maps-Suche. Sie funktioniert ohne eigenen API-Key und ist deshalb gut für einen ersten GitHub-Pages-Prototyp geeignet.
+      </p>
     </section>
   </main>
 
   <script>
     const searchForm = document.getElementById('searchForm');
     const zipInput = document.getElementById('zipInput');
-    const categoryInput = document.getElementById('categoryInput');
-    const results = document.getElementById('results');
-    const resultCount = document.getElementById('resultCount');
+    const mapWrap = document.getElementById('mapWrap');
+    const mapTitle = document.getElementById('mapTitle');
+    const openMapsLink = document.getElementById('openMapsLink');
+    const quickButtons = document.querySelectorAll('.quick-links button');
 
-    const suggestions = {
-      mittagessen: [
-        'Mittagessen',
-        'Lunch',
-        'Take Away',
-        'Imbiss'
-      ],
-      restaurant: [
-        'Restaurant',
-        'Italienisches Restaurant',
-        'Asiatisches Restaurant',
-        'Burger Restaurant'
-      ],
-      cafe: [
-        'Café',
-        'Kaffee',
-        'Coffee Shop',
-        'Frühstück'
-      ],
-      baeckerei: [
-        'Bäckerei',
-        'Backwaren',
-        'Sandwich',
-        'Brezel'
-      ],
-      supermarkt: [
-        'Supermarkt',
-        'REWE',
-        'EDEKA',
-        'Lidl'
-      ],
-      snack: [
-        'Kiosk',
-        'Späti',
-        'Snack',
-        'Convenience Store'
-      ],
-      vegetarisch: [
-        'Vegetarisches Restaurant',
-        'Vegetarisches Mittagessen',
-        'Salatbar',
-        'Bowls'
-      ],
-      vegan: [
-        'Veganes Restaurant',
-        'Veganes Mittagessen',
-        'Vegan Café',
-        'Vegane Bowls'
-      ]
-    };
+    let currentQuery = 'Essen Restaurant Café Bäckerei Supermarkt Take Away';
 
     searchForm.addEventListener('submit', function(event) {
       event.preventDefault();
+      showMap(currentQuery);
+    });
 
+    quickButtons.forEach(function(button) {
+      button.addEventListener('click', function() {
+        currentQuery = button.dataset.query;
+        showMap(currentQuery);
+      });
+    });
+
+    function showMap(query) {
       const zip = zipInput.value.trim();
-      const category = categoryInput.value;
 
       if (!zip) {
-        showEmpty('Bitte gib zuerst eine PLZ ein.');
+        mapWrap.innerHTML = '<div class="empty-map">Bitte gib zuerst eine PLZ ein.</div>';
         return;
       }
 
-      const items = suggestions[category] || suggestions.mittagessen;
-      showResults(zip, items);
-    });
+      const fullSearch = query + ' in der Nähe von ' + zip;
+      const encodedSearch = encodeURIComponent(fullSearch);
 
-    function showResults(zip, items) {
-      resultCount.textContent = items.length + ' Vorschläge';
+      const embedUrl = 'https://www.google.com/maps?q=' + encodedSearch + '&output=embed';
+      const mapsUrl = 'https://www.google.com/maps/search/' + encodedSearch;
 
-      results.innerHTML = items.map(function(item) {
-        const searchText = item + ' in der Nähe von ' + zip;
-        const mapsUrl = 'https://www.google.com/maps/search/' + encodeURIComponent(searchText);
+      mapTitle.textContent = 'Karte für ' + zip;
+      openMapsLink.href = mapsUrl;
 
-        return `
-          <article class="card">
-            <h3>${escapeHtml(item)}</h3>
-            <p>Suche passende Orte in der Nähe von <strong>${escapeHtml(zip)}</strong>.</p>
-            <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer">In Google Maps öffnen</a>
-          </article>
-        `;
-      }).join('');
-    }
-
-    function showEmpty(message) {
-      resultCount.textContent = 'Keine Ergebnisse';
-      results.innerHTML = '<div class="empty">' + escapeHtml(message) + '</div>';
-    }
-
-    function escapeHtml(text) {
-      return String(text).replace(/[&<>'"]/g, function(char) {
-        return {
-          '&': '&amp;',
-          '<': '&lt;',
-          '>': '&gt;',
-          "'": '&#39;',
-          '"': '&quot;'
-        }[char];
-      });
+      mapWrap.innerHTML = '<iframe title="Pausenfinder Karte" loading="lazy" allowfullscreen src="' + embedUrl + '"></iframe>';
     }
   </script>
 </body>
