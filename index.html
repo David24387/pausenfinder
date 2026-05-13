@@ -4,17 +4,183 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Euromaster Pausenfinder</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
   <style>
-    *{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f4f6f8;color:#1f2937}.container{max-width:1100px;margin:auto;padding:32px 16px}.hero,.search-box,.map-wrap{background:#fff;border-radius:22px;box-shadow:0 10px 30px rgba(0,0,0,.08)}.hero{padding:34px;margin-bottom:24px}h1{margin:0 0 12px;font-size:44px;letter-spacing:-1px}.subtitle{color:#64748b;font-size:18px;line-height:1.6;margin:0;max-width:860px}.search-box{padding:24px;margin-bottom:24px}.form-grid{display:grid;grid-template-columns:1fr 1.2fr 1fr auto;gap:14px;align-items:end}label{display:block;font-weight:bold;margin-bottom:8px}input,select,button{width:100%;padding:14px 15px;border-radius:12px;border:1px solid #cbd5e1;font-size:16px}button{border:none;background:#2563eb;color:white;font-weight:bold;cursor:pointer;white-space:nowrap;padding-left:24px;padding-right:24px}button:hover{background:#1d4ed8}.small-hint,.status,.note{color:#64748b;font-size:14px;line-height:1.5}.selected-location{margin-top:14px;padding:13px 14px;border-radius:14px;background:#eff6ff;color:#1d4ed8;font-weight:bold;display:none}.selected-location span{display:block;color:#334155;font-weight:normal;margin-top:4px}.small-hint{margin-top:12px}.status{margin-top:8px}.map-title-row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:28px 4px 14px}.map-title-row h2{margin:0;font-size:26px}.map-title-row a{text-decoration:none;background:#eff6ff;color:#1d4ed8;font-weight:bold;padding:10px 13px;border-radius:999px;white-space:nowrap}.map-wrap{height:620px;overflow:hidden;border:1px solid #e2e8f0}#map{width:100%;height:100%}.note{margin:12px 4px 0}.euromaster-pin{background:#2563eb;border:3px solid white;border-radius:50%;width:24px;height:24px;box-shadow:0 0 0 7px rgba(37,99,235,.22),0 6px 18px rgba(0,0,0,.25)}.place-pin{background:#f97316;border:2px solid white;border-radius:50%;width:16px;height:16px;box-shadow:0 4px 12px rgba(0,0,0,.25)}@media(max-width:980px){.form-grid{grid-template-columns:1fr 1fr}}@media(max-width:700px){.form-grid{grid-template-columns:1fr}.map-title-row{display:block}.map-title-row a{display:inline-block;margin-top:12px}h1{font-size:34px}.hero,.search-box{padding:22px}.map-wrap{height:500px}}
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      font-family:'Montserrat',Arial,sans-serif;
+      background:#fff;
+      color:#1f2937;
+    }
+
+    .container{
+      width:100%;
+      max-width:none;
+      margin:0;
+      padding:0;
+    }
+
+    .search-box,.map-wrap{
+      background:#fff;
+      border-radius:8px;
+      box-shadow:0 10px 30px rgba(0,0,0,.08);
+    }
+
+    .search-box{
+      padding:24px;
+      margin:0 0 24px 0;
+      border-radius:0 0 8px 8px;
+    }
+
+    .form-grid{
+      display:grid;
+      grid-template-columns:1fr 1.2fr 1fr auto;
+      gap:14px;
+      align-items:end;
+    }
+
+    label{
+      display:block;
+      font-weight:600;
+      margin-bottom:8px;
+    }
+
+    input,select,button{
+      width:100%;
+      padding:14px 15px;
+      border-radius:8px;
+      border:1px solid #cbd5e1;
+      font-size:16px;
+      font-family:'Montserrat',Arial,sans-serif;
+    }
+
+    button{
+      border:none;
+      background:#164194;
+      color:white;
+      font-weight:700;
+      cursor:pointer;
+      white-space:nowrap;
+      padding-left:24px;
+      padding-right:24px;
+      transition:.2s ease;
+    }
+
+    button:hover{
+      background:#12357a;
+    }
+
+    .small-hint,.status,.note{
+      color:#64748b;
+      font-size:14px;
+      line-height:1.5;
+    }
+
+    .selected-location{
+      margin-top:14px;
+      padding:13px 14px;
+      border-radius:8px;
+      background:#eef4ff;
+      color:#164194;
+      font-weight:700;
+      display:none;
+    }
+
+    .selected-location span{
+      display:block;
+      color:#334155;
+      font-weight:400;
+      margin-top:4px;
+    }
+
+    .small-hint{margin-top:12px}
+    .status{margin-top:8px}
+
+    .map-title-row{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin:28px 0 14px;
+      padding:0 24px;
+    }
+
+    .map-title-row h2{
+      margin:0;
+      font-size:26px;
+      font-weight:700;
+    }
+
+    .map-title-row a{
+      text-decoration:none;
+      background:#eef4ff;
+      color:#164194;
+      font-weight:700;
+      padding:10px 13px;
+      border-radius:8px;
+      white-space:nowrap;
+    }
+
+    .map-wrap{
+      height:620px;
+      overflow:hidden;
+      border:1px solid #e2e8f0;
+      border-left:none;
+      border-right:none;
+      border-radius:8px;
+    }
+
+    #map{
+      width:100%;
+      height:100%;
+    }
+
+    .note{
+      margin:12px 24px 24px;
+    }
+
+    .euromaster-pin{
+      background:#164194;
+      border:3px solid white;
+      border-radius:50%;
+      width:24px;
+      height:24px;
+      box-shadow:0 0 0 7px rgba(22,65,148,.22),0 6px 18px rgba(0,0,0,.25);
+    }
+
+    .place-pin{
+      background:#f97316;
+      border:2px solid white;
+      border-radius:50%;
+      width:16px;
+      height:16px;
+      box-shadow:0 4px 12px rgba(0,0,0,.25);
+    }
+
+    @media(max-width:980px){
+      .form-grid{grid-template-columns:1fr 1fr}
+    }
+
+    @media(max-width:700px){
+      .form-grid{grid-template-columns:1fr}
+      .map-title-row{display:block}
+      .map-title-row a{display:inline-block;margin-top:12px}
+      .search-box{padding:22px}
+      .map-wrap{height:500px}
+    }
   </style>
 </head>
+
 <body>
   <main class="container">
-    <section class="hero">
-      <h1>Euromaster Pausenfinder</h1>
-      <p class="subtitle">Suche deinen Euromaster-Standort per PLZ, Stadt oder Straße. Der ausgewählte Standort wird blau hervorgehoben; passende Orte für die Pause erscheinen als orange Marker.</p>
-    </section>
 
     <section class="search-box">
       <form id="searchForm" class="form-grid">
@@ -22,10 +188,12 @@
           <label for="filterInput">Standort suchen</label>
           <input id="filterInput" type="text" placeholder="z. B. 22041, Hamburg, München" autocomplete="off" />
         </div>
+
         <div>
           <label for="locationInput">Euromaster-Standort</label>
           <select id="locationInput" required></select>
         </div>
+
         <div>
           <label for="categoryInput">Was suchst du?</label>
           <select id="categoryInput">
@@ -37,10 +205,13 @@
             <option value="convenience">Snack / Kiosk</option>
           </select>
         </div>
+
         <button type="submit">Karte anzeigen</button>
       </form>
+
       <div class="small-hint" id="filterHint">Tippe eine PLZ, Stadt oder Straße ein. Die Standortliste wird automatisch gefiltert.</div>
       <div class="status" id="statusText"></div>
+
       <div class="selected-location" id="selectedLocationBox">
         Ausgewählter Standort
         <span id="selectedLocationText"></span>
@@ -52,15 +223,19 @@
       <a id="openMapsLink" href="https://www.openstreetmap.org" target="_blank" rel="noopener noreferrer">Standort öffnen</a>
     </div>
 
-    <section class="map-wrap"><div id="map"></div></section>
+    <section class="map-wrap">
+      <div id="map"></div>
+    </section>
+
     <p class="note">Hinweis: Diese Version nutzt OpenStreetMap, Nominatim und Overpass. Für einen produktiven Intranet-Einsatz sollte man später einen eigenen Geocoder oder einen bezahlten Kartendienst nutzen.</p>
   </main>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
   <script>
     const rawLocations = `
 Zentrale Mannheim|Theodor-Heuss-Anlage 12a|68165|Mannheim
-Zentrale Frankfurt|The Squaire 17 Am Flughafen|60549 Frankfurt am Main
+Zentrale Frankfurt|The Squaire 17 Am Flughafen|60549|Frankfurt am Main
 Euromaster GmbH|Neumann-Reichardt-Str. 36a|22041|Hamburg
 Euromaster GmbH|Alte Heerstr. 1|28259|Bremen
 Euromaster GmbH|Industrie Str. 13|27711|Osterholz-Scharmbeck
@@ -264,14 +439,6 @@ Euromaster GmbH|Industriestraße 5|79183|Waldkirch
     });
 
     const categories = {
-      all: [
-        ['node[amenity=restaurant]', 'Restaurant'], ['way[amenity=restaurant]', 'Restaurant'],
-        ['node[amenity=cafe]', 'Café'], ['way[amenity=cafe]', 'Café'],
-        ['node[shop=bakery]', 'Bäckerei'], ['way[shop=bakery]', 'Bäckerei'],
-        ['node[shop=supermarket]', 'Supermarkt'], ['way[shop=supermarket]', 'Supermarkt'],
-        ['node[amenity=fast_food]', 'Take-away'], ['way[amenity=fast_food]', 'Take-away'],
-        ['node[shop=convenience]', 'Kiosk'], ['way[shop=convenience]', 'Kiosk']
-      ],
       restaurant: [['node[amenity=restaurant]', 'Restaurant'], ['way[amenity=restaurant]', 'Restaurant']],
       cafe: [['node[amenity=cafe]', 'Café'], ['way[amenity=cafe]', 'Café']],
       bakery: [['node[shop=bakery]', 'Bäckerei'], ['way[shop=bakery]', 'Bäckerei']],
@@ -291,87 +458,133 @@ Euromaster GmbH|Industriestraße 5|79183|Waldkirch
     const mapTitle = document.getElementById('mapTitle');
     const openMapsLink = document.getElementById('openMapsLink');
 
-    const euromasterIcon = L.divIcon({ className: '', html: '<div class="euromaster-pin"></div>', iconSize: [24,24], iconAnchor: [12,12] });
-    const placeIcon = L.divIcon({ className: '', html: '<div class="place-pin"></div>', iconSize: [16,16], iconAnchor: [8,8] });
+    const euromasterIcon = L.divIcon({
+      className:'',
+      html:'<div class="euromaster-pin"></div>',
+      iconSize:[24,24],
+      iconAnchor:[12,12]
+    });
 
-    const map = L.map('map').setView([51.1657, 10.4515], 6);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OpenStreetMap' }).addTo(map);
+    const placeIcon = L.divIcon({
+      className:'',
+      html:'<div class="place-pin"></div>',
+      iconSize:[16,16],
+      iconAnchor:[8,8]
+    });
+
+    const map = L.map('map').setView([51.1657,10.4515],6);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+      maxZoom:19,
+      attribution:'&copy; OpenStreetMap'
+    }).addTo(map);
+
     let markerLayer = L.layerGroup().addTo(map);
 
-    function normalize(text){ return String(text).toLowerCase().replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss'); }
+    function normalize(text){
+      return String(text)
+        .toLowerCase()
+        .replace(/ä/g,'ae')
+        .replace(/ö/g,'oe')
+        .replace(/ü/g,'ue')
+        .replace(/ß/g,'ss');
+    }
+
     function fillLocations(filterText){
       const f = normalize(filterText || '');
-      const found = locations.filter(l => normalize(`${l.zip} ${l.city} ${l.street} ${l.name}`).includes(f));
+      const found = locations.filter(l =>
+        normalize(`${l.zip} ${l.city} ${l.street} ${l.name}`).includes(f)
+      );
+
       locationInput.innerHTML = '';
+
       if(!found.length){
         locationInput.innerHTML = '<option value="">Kein Standort gefunden</option>';
         filterHint.textContent = 'Kein Standort gefunden. Probiere PLZ, Stadt oder Straße anders zu schreiben.';
+        selectedLocationBox.style.display = 'none';
         return;
       }
-      found.forEach((l, index) => {
+
+      found.forEach(l => {
         const option = document.createElement('option');
         option.value = locations.indexOf(l);
         option.textContent = l.label;
         locationInput.appendChild(option);
       });
+
       filterHint.textContent = found.length + ' Standort(e) gefunden.';
       updateSelectedLocationBox();
     }
 
     function updateSelectedLocationBox(){
       const selectedIndex = locationInput.value;
+
       if(selectedIndex === ''){
         selectedLocationBox.style.display = 'none';
         selectedLocationText.textContent = '';
         return;
       }
+
       const location = locations[Number(selectedIndex)];
       selectedLocationBox.style.display = 'block';
-      selectedLocationText.textContent = location.name + ' – ' + location.street + ', ' + location.zip + ' ' + location.city;
+      selectedLocationText.textContent = `${location.name} – ${location.street}, ${location.zip} ${location.city}`;
     }
 
     async function geocodeLocation(location){
       const q = `${location.street}, ${location.zip} ${location.city}, Deutschland`;
       const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(q)}`;
-      const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+      const res = await fetch(url,{headers:{Accept:'application/json'}});
       const data = await res.json();
-      if(!data.length) throw new Error('Der Standort konnte nicht geocodiert werden.');
-      return { lat: Number(data[0].lat), lon: Number(data[0].lon) };
+
+      if(!data.length){
+        throw new Error('Der Standort konnte nicht geocodiert werden.');
+      }
+
+      return {
+        lat:Number(data[0].lat),
+        lon:Number(data[0].lon)
+      };
     }
 
-    async function searchPlaces(lat, lon, category){
+    async function searchPlaces(lat,lon,category){
       const rules = categories[category] || categories.restaurant;
       const radius = 1800;
 
       let query = '[out:json][timeout:30];(';
+
       rules.forEach(r => {
-        const rule = r[0];
-        query += `${rule}(around:${radius},${lat},${lon});`;
+        query += `${r[0]}(around:${radius},${lat},${lon});`;
       });
+
       query += ');out center 100;';
 
-      const res = await fetch('https://overpass-api.de/api/interpreter', {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: query
+      const res = await fetch('https://overpass-api.de/api/interpreter',{
+        method:'POST',
+        headers:{'Content-Type':'text/plain'},
+        body:query
       });
 
-      if(!res.ok) throw new Error('Die Ortssuche ist gerade nicht erreichbar. Bitte später erneut versuchen.');
+      if(!res.ok){
+        throw new Error('Die Ortssuche ist gerade nicht erreichbar. Bitte später erneut versuchen.');
+      }
 
       const data = await res.json();
-
       const seen = new Set();
+
       return data.elements.map(e => {
-        const latValue = e.lat || (e.center && e.center.lat);
-        const lonValue = e.lon || (e.center && e.center.lon);
-        const key = `${latValue},${lonValue},${e.tags && e.tags.name ? e.tags.name : ''}`;
+        const latValue = e.lat || e.center?.lat;
+        const lonValue = e.lon || e.center?.lon;
+        const name = e.tags?.name || 'Ort ohne Namen';
+        const key = `${latValue},${lonValue},${name}`;
+
         if(seen.has(key)) return null;
         seen.add(key);
+
         return {
-          name: e.tags && e.tags.name ? e.tags.name : 'Ort ohne Namen',
-          lat: latValue,
-          lon: lonValue,
-          tags: e.tags || {}
+          name,
+          lat:latValue,
+          lon:lonValue,
+          tags:e.tags || {}
         };
       }).filter(p => p && p.lat && p.lon).slice(0,100);
     }
@@ -386,52 +599,77 @@ Euromaster GmbH|Industriestraße 5|79183|Waldkirch
       return 'Ort';
     }
 
-    function escapeHtml(text){ return String(text).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
+    function escapeHtml(text){
+      return String(text).replace(/[&<>'"]/g,c => ({
+        '&':'&amp;',
+        '<':'&lt;',
+        '>':'&gt;',
+        "'":'&#39;',
+        '"':'&quot;'
+      }[c]));
+    }
 
     async function showMap(){
       try{
         const selectedIndex = locationInput.value;
         if(selectedIndex === '') return;
+
         const location = locations[Number(selectedIndex)];
         const categoryLabel = categoryInput.options[categoryInput.selectedIndex].text;
+
         statusText.textContent = 'Standort und Orte werden geladen ...';
         markerLayer.clearLayers();
 
         const pos = await geocodeLocation(location);
-        map.setView([pos.lat, pos.lon], 16);
-        const euromasterMarker = L.marker([pos.lat, pos.lon], { icon: euromasterIcon }).addTo(markerLayer);
-        euromasterMarker.bindPopup(`<b>Euromaster-Standort</b><br>${escapeHtml(location.street)}<br>${escapeHtml(location.zip + ' ' + location.city)}`).openPopup();
 
-        const places = await searchPlaces(pos.lat, pos.lon, categoryInput.value);
-        const bounds = L.latLngBounds([[pos.lat, pos.lon]]);
+        map.setView([pos.lat,pos.lon],16);
+
+        const euromasterMarker = L.marker([pos.lat,pos.lon],{icon:euromasterIcon}).addTo(markerLayer);
+
+        euromasterMarker.bindPopup(
+          `<b>Euromaster-Standort</b><br>${escapeHtml(location.street)}<br>${escapeHtml(location.zip + ' ' + location.city)}`
+        ).openPopup();
+
+        const places = await searchPlaces(pos.lat,pos.lon,categoryInput.value);
+        const bounds = L.latLngBounds([[pos.lat,pos.lon]]);
 
         places.forEach(place => {
-          const marker = L.marker([place.lat, place.lon], { icon: placeIcon }).addTo(markerLayer);
-          const encodedOrigin = encodeURIComponent(location.street + ', ' + location.zip + ' ' + location.city);
+          const marker = L.marker([place.lat,place.lon],{icon:placeIcon}).addTo(markerLayer);
+          const encodedOrigin = encodeURIComponent(`${location.street}, ${location.zip} ${location.city}`);
           const routeUrl = `https://www.google.com/maps/dir/?api=1&origin=${encodedOrigin}&destination=${place.lat},${place.lon}&travelmode=walking`;
-          marker.bindPopup(`<b>${escapeHtml(place.name)}</b><br>${escapeHtml(placeType(place.tags))}<br><br><a href="${routeUrl}" target="_blank" rel="noopener noreferrer">Route öffnen</a>`);
-          bounds.extend([place.lat, place.lon]);
+
+          marker.bindPopup(
+            `<b>${escapeHtml(place.name)}</b><br>${escapeHtml(placeType(place.tags))}<br><br><a href="${routeUrl}" target="_blank" rel="noopener noreferrer">Route öffnen</a>`
+          );
+
+          bounds.extend([place.lat,place.lon]);
         });
 
         if(places.length > 0){
-          map.fitBounds(bounds, { padding: [40, 40], maxZoom: 16 });
-        } else {
-          map.setView([pos.lat, pos.lon], 16);
+          map.fitBounds(bounds,{padding:[40,40],maxZoom:16});
+        }else{
+          map.setView([pos.lat,pos.lon],16);
         }
 
         mapTitle.textContent = `${categoryLabel} rund um ${location.zip} ${location.city}`;
         openMapsLink.href = `https://www.openstreetmap.org/?mlat=${pos.lat}&mlon=${pos.lon}#map=17/${pos.lat}/${pos.lon}`;
+
         statusText.textContent = places.length > 0
           ? `${places.length} Ort(e) im Umkreis gefunden. Blau = Euromaster, Orange = Pausen-Orte.`
-          : `Keine passenden Orte im Umkreis gefunden. Probiere eine andere Kategorie.`;
+          : 'Keine passenden Orte im Umkreis gefunden. Probiere eine andere Kategorie.';
+
       }catch(error){
         statusText.textContent = error.message;
       }
     }
 
-    filterInput.addEventListener('input', () => fillLocations(filterInput.value));
-    locationInput.addEventListener('change', updateSelectedLocationBox);
-    searchForm.addEventListener('submit', event => { event.preventDefault(); showMap(); });
+    filterInput.addEventListener('input',() => fillLocations(filterInput.value));
+    locationInput.addEventListener('change',updateSelectedLocationBox);
+    searchForm.addEventListener('submit',event => {
+      event.preventDefault();
+      showMap();
+    });
+
     fillLocations('');
   </script>
 </body>
