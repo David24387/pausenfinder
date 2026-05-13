@@ -3,193 +3,43 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Pausenfinder</title>
+  <title>Euromaster Pausenfinder</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: #f4f6f8;
-      color: #1f2937;
-    }
-
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 32px 16px;
-    }
-
-    .hero {
-      background: #ffffff;
-      border-radius: 22px;
-      padding: 34px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-      margin-bottom: 24px;
-    }
-
-    h1 {
-      margin: 0 0 12px;
-      font-size: 44px;
-      letter-spacing: -1px;
-    }
-
-    .subtitle {
-      color: #64748b;
-      font-size: 18px;
-      line-height: 1.6;
-      margin: 0;
-      max-width: 760px;
-    }
-
-    .search-box {
-      background: #ffffff;
-      border-radius: 22px;
-      padding: 24px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-      margin-bottom: 24px;
-    }
-
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr auto;
-      gap: 14px;
-      align-items: end;
-    }
-
-    label {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 8px;
-    }
-
-    input,
-    select,
-    button {
-      width: 100%;
-      padding: 14px 15px;
-      border-radius: 12px;
-      border: 1px solid #cbd5e1;
-      font-size: 16px;
-    }
-
-    button {
-      border: none;
-      background: #2563eb;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      white-space: nowrap;
-      padding-left: 24px;
-      padding-right: 24px;
-    }
-
-    button:hover {
-      background: #1d4ed8;
-    }
-
-    .map-title-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin: 28px 4px 14px;
-    }
-
-    .map-title-row h2 {
-      margin: 0;
-      font-size: 26px;
-    }
-
-    .map-title-row a {
-      text-decoration: none;
-      background: #eff6ff;
-      color: #1d4ed8;
-      font-weight: bold;
-      padding: 10px 13px;
-      border-radius: 999px;
-      white-space: nowrap;
-    }
-
-    .map-wrap {
-      width: 100%;
-      height: 560px;
-      border-radius: 22px;
-      overflow: hidden;
-      border: 1px solid #e2e8f0;
-      background: #ffffff;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-    }
-
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: 0;
-    }
-
-    .empty-map {
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      color: #64748b;
-      padding: 30px;
-      line-height: 1.6;
-    }
-
-    .note {
-      margin: 12px 4px 0;
-      color: #64748b;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    @media (max-width: 700px) {
-      .form-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .map-title-row {
-        display: block;
-      }
-
-      .map-title-row a {
-        display: inline-block;
-        margin-top: 12px;
-      }
-
-      h1 {
-        font-size: 34px;
-      }
-
-      .hero,
-      .search-box {
-        padding: 22px;
-      }
-
-      .map-wrap {
-        height: 480px;
-      }
-    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: #f4f6f8; color: #1f2937; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 32px 16px; }
+    .hero { background: #ffffff; border-radius: 22px; padding: 34px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); margin-bottom: 24px; }
+    h1 { margin: 0 0 12px; font-size: 44px; letter-spacing: -1px; }
+    .subtitle { color: #64748b; font-size: 18px; line-height: 1.6; margin: 0; max-width: 820px; }
+    .search-box { background: #ffffff; border-radius: 22px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); margin-bottom: 24px; }
+    .form-grid { display: grid; grid-template-columns: 1.4fr 1fr auto; gap: 14px; align-items: end; }
+    label { display: block; font-weight: bold; margin-bottom: 8px; }
+    input, select, button { width: 100%; padding: 14px 15px; border-radius: 12px; border: 1px solid #cbd5e1; font-size: 16px; }
+    button { border: none; background: #2563eb; color: white; font-weight: bold; cursor: pointer; white-space: nowrap; padding-left: 24px; padding-right: 24px; }
+    button:hover { background: #1d4ed8; }
+    .small-hint { color: #64748b; font-size: 14px; margin-top: 12px; line-height: 1.5; }
+    .map-title-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 28px 4px 14px; }
+    .map-title-row h2 { margin: 0; font-size: 26px; }
+    .map-title-row a { text-decoration: none; background: #eff6ff; color: #1d4ed8; font-weight: bold; padding: 10px 13px; border-radius: 999px; white-space: nowrap; }
+    .map-wrap { width: 100%; height: 590px; border-radius: 22px; overflow: hidden; border: 1px solid #e2e8f0; background: #ffffff; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+    iframe { width: 100%; height: 100%; border: 0; }
+    .empty-map { height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; color: #64748b; padding: 30px; line-height: 1.6; }
+    .note { margin: 12px 4px 0; color: #64748b; font-size: 14px; line-height: 1.5; }
+    @media (max-width: 820px) { .form-grid { grid-template-columns: 1fr; } .map-title-row { display: block; } .map-title-row a { display: inline-block; margin-top: 12px; } h1 { font-size: 34px; } .hero, .search-box { padding: 22px; } .map-wrap { height: 480px; } }
   </style>
 </head>
 <body>
   <main class="container">
     <section class="hero">
-      <h1>Pausenfinder</h1>
-      <p class="subtitle">
-        Gib deine PLZ ein, wähle aus, was du suchst, und finde direkt auf der Karte passende Orte für die Pause.
-      </p>
+      <h1>Euromaster Pausenfinder</h1>
+      <p class="subtitle">Wähle deinen Euromaster-Standort aus und finde direkt auf der Karte passende Orte für die Pause: Restaurants, Cafés, Bäckereien, Supermärkte, Snacks und Take-away.</p>
     </section>
 
     <section class="search-box">
       <form id="searchForm" class="form-grid">
         <div>
-          <label for="zipInput">Postleitzahl</label>
-          <input id="zipInput" type="text" placeholder="z. B. 80331" required />
+          <label for="locationInput">Euromaster-Standort</label>
+          <select id="locationInput" required></select>
         </div>
 
         <div>
@@ -209,6 +59,7 @@
 
         <button type="submit">Karte anzeigen</button>
       </form>
+      <div class="small-hint">Tipp: Die Kategorie „Alles“ ist breiter, einzelne Kategorien liefern meist genauere Karten-Ergebnisse.</div>
     </section>
 
     <div class="map-title-row">
@@ -217,23 +68,226 @@
     </div>
 
     <section class="map-wrap" id="mapWrap">
-      <div class="empty-map">
-        Gib oben eine PLZ ein und wähle eine Kategorie. Danach erscheint hier direkt die Karte.
-      </div>
+      <div class="empty-map">Wähle oben einen Euromaster-Standort und eine Kategorie. Danach erscheint hier direkt die Karte.</div>
     </section>
 
-    <p class="note">
-      Hinweis: Die Karte nutzt eine Google-Maps-Suche ohne eigenen API-Key. Die Kategorie „Alles“ ist eine breite Suche; einzelne Kategorien liefern meistens genauere Ergebnisse.
-    </p>
+    <p class="note">Diese Version nutzt eine Google-Maps-Suche ohne eigenen API-Key. Für ein echtes Intranet könnte man später feste Radius-Suchen, Standortgruppen und geprüfte Empfehlungen ergänzen.</p>
   </main>
 
   <script>
-    const searchForm = document.getElementById('searchForm');
-    const zipInput = document.getElementById('zipInput');
+    const locations = [
+      'Zentrale Mannheim, Theodor-Heuss-Anlage, Mannheim',
+      'Zentrale Frankfurt, The Squaire, Frankfurt am Main Flughafen',
+      'Neumann-Reichardt-Str. 36a, 22041 Hamburg',
+      'Alte Heerstr. 1, 28259 Bremen',
+      'Industrie Str. 13, 27711 Osterholz-Scharmbeck',
+      'Reinbeker Redder 295, 21031 Hamburg',
+      'Eckernförder Straße 163, 24116 Kiel',
+      'Friedrichstädter Straße 42-46, 24768 Rendsburg',
+      'Baumschulenweg 17, 26127 Oldenburg',
+      'Unter der Rampe 3 - 5, 27572 Bremerhaven',
+      'Leher Landstr. 94, 27607 Langen',
+      'Raiffeisenstr. 16, 21762 Otterndorf',
+      'Gravenhorstweg 1, 21684 Stade',
+      'Hannoversche Straße 56-62, 49084 Osnabrueck',
+      'Süderstr. 188, 20537 Hamburg',
+      'Europaallee 3, 28309 Bremen',
+      'Niendorfer Str. 145, 22848 Norderstedt',
+      'Süderstraße 26, 20097 Hamburg',
+      'Ringstr. 13, 26789 Leer',
+      'Willy-Brandt-Ring 10, 49808 Lingen',
+      'Edisonstraße 1, 48432 Rheine',
+      'Münchewiese 20, 31137 Hildesheim',
+      'Bürgermeister-Steenbock-Str. 4, 23701 Eutin',
+      'Nadorster Str. 289, 26125 Oldenburg',
+      'Atenser Allee 125, 26954 Nordenham',
+      'Burgstr. 11, 26655 Westerstede',
+      'Am Lindener Hafen 18, 30453 Hannover',
+      'Hansaallee 6, 48429 Rheine',
+      'Tempelhofer Weg 36, 12347 Berlin',
+      'Max-Planck-Str. 2, 27283 Verden',
+      'Tremskamp 34, 23611 Bad Schwartau',
+      'Gutenbergstr. 14, 24941 Flensburg',
+      'Hinrichsdorfer Str. 7D, 18146 Rostock',
+      'Marktflecken 5, 17498 Neuenkirchen',
+      'Wilhelm-Stolte-Str. 127, 17235 Neustrelitz',
+      'Stresemannstr. 70, 28207 Bremen',
+      'Lüchtringer Weg 56, 37603 Holzminden',
+      'Pohlitzer Mühle 1, 15890 Eisenhüttenstadt',
+      'Stadtring 3a, 03042 Cottbus',
+      'Pollhornbogen 4, 21107 Hamburg',
+      'Leverkusenstr. 56, 22761 Hamburg',
+      'Bauhüttenstr. 12, 06847 Dessau',
+      'Friedrich-Seele-Str. 1A, 38122 Braunschweig',
+      'Gehrenseestr. 43, 13053 Berlin',
+      'Grünbergallee 274, 12526 Berlin',
+      'Körbelitzer Str. 3, 39126 Magdeburg',
+      'Trothaerstr. 47, 06118 Halle',
+      'Siegfriedstr. 53, 10365 Berlin',
+      'Sachsenhausener Str. 29, 16515 Oranienburg',
+      'Carl-Louis-Hirsch-Str. 7, 07552 Gera',
+      'Annaberger Str. 180, 09120 Chemnitz',
+      'Hamburger Str. 11, 01067 Dresden',
+      'Brockesstr. 67, 23554 Luebeck',
+      'Langensteiner Str. 1, 38820 Halberstadt',
+      'Teltower Damm 279, 14167 Berlin',
+      'Zur Heide 11, 15712 Koenigs Wusterhausen',
+      'Nevigeser Straße 511, 42111 Wuppertal',
+      'Am Nordhafen 2, 47138 Duisburg',
+      'Otto-Brenner-Straße 21-23, 59067 Hamm',
+      'Jülicher Straße 85, 41464 Neuss',
+      'Südstraße 7, 48231 Warendorf',
+      'Kleinstraße 1, 40597 Duesseldorf',
+      'Ruhrorter Straße 10, 47059 Duisburg',
+      'Wilhelm-Bertelsmann-Str. 1a, 33602 Bielefeld',
+      'Grüner Weg 48, 52070 Aachen',
+      'Giesenkirchener Straße 170, 41238 Moenchengladbach',
+      'Lünener Straße 30-32, 59174 Kamen',
+      'Tilsiter Str. 6, 30855 Langenhagen',
+      'Jesinghausen 21, 42389 Wuppertal',
+      'Johannes-Flintrop-Straße 107, 40822 Mettmann',
+      'Kaiserswerther Straße 95, 40882 Ratingen',
+      'Bonnstrasse 258, 50354 Huerth',
+      'Melatengürtel 105, 50825 Koeln',
+      'Kölner Straße 242, 51149 Koeln',
+      'Kölner Straße 52, 58135 Hagen',
+      'Dürener Straße 471, 52249 Eschweiler',
+      'Pinienstraße 4, 40233 Duesseldorf',
+      'Magdeburger Straße 36, 47800 Krefeld',
+      'Clausewitzstraße 8, 42389 Wuppertal',
+      'Friedrich-List-Str. 31, 33100 Paderborn',
+      'Wackelsbeck 51, 45472 Muelheim',
+      'Am Freistuhl 10, 45896 Gelsenkirchen',
+      'Moerser Straße 474, 47475 Kamp-Lintfort',
+      'Eisenstr. 55, 44145 Dortmund',
+      'Bräuker Weg 126, 58708 Menden',
+      'Gladbecker Straße 20, 45141 Essen',
+      'Renault-Nissan-Straße 54, 50321 Bruehl',
+      'Königswinterer Straße 50, 53227 Bonn',
+      'Tilsiter Straße 8, 60487 Frankfurt am Main',
+      'Am Keglerheim 13, 65428 Ruesselsheim',
+      'Schomburgkstr. 10A, 04179 Leipzig',
+      'Stöhrerstr. 19, 04347 Leipzig',
+      'Gotenweg 7, 06886 Lutherstadt Wittenberg',
+      'Broihanstr. 4, 06132 Halle',
+      'Am Speicher 2, 02977 Hoyerswerda',
+      'Riedteichstraße 7, 37235 Hessisch Lichtenau',
+      'Mündener Straße 14, 34123 Kassel',
+      'An der Lache 36, 99086 Erfurt',
+      'Camburger Str. 66B, 07743 Jena',
+      'Muldestr. 43, 08056 Zwickau',
+      'Ruppiner Str. 3-5, 16909 Wittstock/Dosse',
+      'Gewerbestraße 8b, 64807 Dieburg',
+      'Benzweg 2, 64293 Darmstadt',
+      'Blankenburgstr. 110, 09114 Chemnitz',
+      'Moerser Straße 476, 47475 Kamp-Lintfort',
+      'Robert-Bosch-Str. 2, 46485 Wesel',
+      'Hedwigstraße 15, 46537 Dinslaken',
+      'Alte Untergath 51, 47805 Krefeld',
+      'Lipperfeld 15, 46047 Oberhausen',
+      'Rotterdamer Straße 15, 46446 Emmerich',
+      'Hüttenstraße 11-17, 42857 Remscheid',
+      'Weyerstraße 194, 42719 Solingen',
+      'Weseler Straße 62, 45478 Muelheim',
+      'Hertelsbrunnenring 36, 67657 Kaiserslautern',
+      'Industriestraße 16, 67269 Gruenstadt',
+      'Glanstraße 43, 66869 Kusel',
+      'Marnheimer Straße 63, 67292 Kirchheimbolanden',
+      'Neumühler Weg 83, 66130 Saarbruecken',
+      'Albert-Einstein-Str. 2, 34582 Borken',
+      'Flughafenstraße 14, 64347 Darmstadt',
+      'Robert-Bosch-Straße 11, 55129 Mainz',
+      'Industriestraße 13, 55120 Mainz',
+      'Loebstraße 8, 54292 Trier',
+      'Von-der-Tann-Straße 9, 67433 Neustadt an der Weinstraße',
+      'Kastanienweg 7-9, 66386 St. Ingbert',
+      'Carl-Zeiss-Straße 32, 66740 Saarlouis',
+      'Mundenheimer Straße 72A, 67061 Ludwigshafen',
+      'Wallerfanger Straße 67, 66740 Saarlouis',
+      'Leonhard-Oberhäuser-Straße 8, 86825 Bad Woerishofen',
+      'Hardeckstr. 1, 76185 Karlsruhe',
+      'An der Schnepfenschneise 7-9, 64546 Moerfelden',
+      'Draisstrasse 60, 67346 Speyer',
+      'Hagenauer Straße 15, 65203 Wiesbaden',
+      'Limburger Straße 51-53, 65520 Bad Camberg',
+      'Carl-Benz-Straße 29, 60386 Frankfurt am Main',
+      'Keilswingert 8, 35781 Weilburg',
+      'Leonhard-Karl-Straße 22, 97877 Wertheim',
+      'Diedenhofener Strasse 3, 54294 Trier',
+      'Auhofstraße 2a, 63741 Aschaffenburg',
+      'Maschmühlenweg 119, 37081 Goettingen',
+      'Hohleichenrain 10, 35708 Haiger',
+      'Max-Holder-Straße 4, 60437 Frankfurt am Main',
+      'Weißenburger Straße 24, 76829 Landau',
+      'Daimler Straße 28, 69190 Walldorf',
+      'Robert-Bosch-Straße 8, 74653 Kuenzelsau',
+      'Schussentalstraße 55, 88255 Baienfurt',
+      'Floßwörthstraße 37, 68199 Mannheim',
+      'Hurststraße 11, 77815 Buehl',
+      'Altensteiger Straße 32, 72202 Nagold',
+      'Habermehlstraße 44, 75172 Pforzheim',
+      'Wilhelmstraße 182, 89518 Heidenheim a. d. Brenz',
+      'Colmarer Straße 12, 79576 Weil am Rhein',
+      'Industriestraße 15, 94469 Deggendorf',
+      'Heisterstraße 1D, 90441 Nuernberg',
+      'Gutenbergstraße 2, 97526 Sennfeld',
+      'Gattingerstraße 16, 97076 Wuerzburg',
+      'Alte Nürnberger Straße 85, 93059 Regensburg',
+      'Dieselstraße 15, 85080 Gaimersheim',
+      'Philipp-Zorn-Straße 6, 91522 Ansbach',
+      'Dachauer Strasse 509a, 80993 Muenchen',
+      'Austraße 155, 74076 Heilbronn',
+      'Spitalhofstraße 92, 94032 Passau',
+      'Sigmaringer Straße 106E, 72458 Ebingen',
+      'Karl-Wüst-Straße 34, 74076 Heilbronn',
+      'Implerstraße 19, 81371 Muenchen',
+      'Schleißheimer Strasse 95a, 85748 Garching',
+      'Stuifenstr. 59, 74385 Pleidelsheim',
+      'Carl-Benz-Straße 3, 69115 Heidelberg',
+      'Casterfeldstraße 122-124, 68199 Mannheim',
+      'Hanns-Klemm-Straße 17, 71034 Boeblingen',
+      'Liebigstraße 41, 74211 Leingarten',
+      'Eisenbahnstraße 166, 72072 Tuebingen',
+      'Scheffelstraße 42-44, 68723 Schwetzingen',
+      'Hohlohstraße 1, 76437 Rastatt',
+      'Hedelfinger Straße 27, 70327 Stuttgart',
+      'Freiburger Straße 51, 88400 Biberach a. d. Riss',
+      'Dieselstraße 4, 91541 Rothenburg',
+      'Brombacher Straße 75, 79539 Loerrach',
+      'Bodenseestraße 209, 81243 Muenchen',
+      'Aschauer Str. 6, 81549 Muenchen',
+      'Ludwig-Thoma-Straße 12, 85716 Unterschleissheim',
+      'Siemensstraße 2, 85521 Ottobrunn',
+      'Eltersdorfer Straße 33, 90425 Nuernberg',
+      'Daimlerstraße 4, 86391 Stadtbergen',
+      'Josefsthaler Straße 9, 87600 Kaufbeuren',
+      'Kunigundenstraße 12, 80802 Muenchen',
+      'Joseph-Fraunhofer-Straße 46, 85276 Pfaffenhofen',
+      'Pfaffenhäule 16, 78224 Singen',
+      'Schockenriedstraße 23, 70565 Stuttgart',
+      'Donauwörther Straße 246, 86154 Augsburg',
+      'Holzhauser Straße 12, 86899 Landsberg am Lech',
+      'Bürgermeister-Meißner-Straße 1, 96231 Bad Staffelstein',
+      'Siebenbrünnelstr. 1, 86316 Derching',
+      'Walldürner Straße 40, 74722 Buchen',
+      'Talfinger Straße 23, 89073 Ulm',
+      'Memminger Straße 50, 89231 Neu-Ulm',
+      'Industriestraße 5, 79183 Waldkirch'
+    ];
+
+    const locationInput = document.getElementById('locationInput');
     const categoryInput = document.getElementById('categoryInput');
+    const searchForm = document.getElementById('searchForm');
     const mapWrap = document.getElementById('mapWrap');
     const mapTitle = document.getElementById('mapTitle');
     const openMapsLink = document.getElementById('openMapsLink');
+
+    locations.forEach(function(location) {
+      const option = document.createElement('option');
+      option.value = location;
+      option.textContent = location;
+      locationInput.appendChild(option);
+    });
 
     searchForm.addEventListener('submit', function(event) {
       event.preventDefault();
@@ -241,26 +295,25 @@
     });
 
     function showMap() {
-      const zip = zipInput.value.trim();
+      const location = locationInput.value;
       const category = categoryInput.value;
       const categoryLabel = categoryInput.options[categoryInput.selectedIndex].text;
 
-      if (!zip) {
-        mapWrap.innerHTML = '<div class="empty-map">Bitte gib zuerst eine PLZ ein.</div>';
+      if (!location) {
+        mapWrap.innerHTML = '<div class="empty-map">Bitte wähle zuerst einen Standort aus.</div>';
         return;
       }
 
-      const searchText = category + ' in der Nähe von ' + zip;
+      const searchText = category + ' in der Nähe von Euromaster GmbH, ' + location;
       const encodedSearch = encodeURIComponent(searchText);
-
       const embedUrl = 'https://www.google.com/maps?q=' + encodedSearch + '&output=embed';
       const mapsUrl = 'https://www.google.com/maps/search/' + encodedSearch;
 
-      mapTitle.textContent = categoryLabel + ' in der Nähe von ' + zip;
+      mapTitle.textContent = categoryLabel + ' rund um den Standort';
       openMapsLink.href = mapsUrl;
-
-      mapWrap.innerHTML = '<iframe title="Pausenfinder Karte" loading="lazy" allowfullscreen src="' + embedUrl + '"></iframe>';
+      mapWrap.innerHTML = '<iframe title="Euromaster Pausenfinder Karte" loading="lazy" allowfullscreen src="' + embedUrl + '"></iframe>';
     }
   </script>
 </body>
 </html>
+
