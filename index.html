@@ -54,7 +54,7 @@
 
     .form-grid {
       display: grid;
-      grid-template-columns: 1fr auto;
+      grid-template-columns: 1fr 1fr auto;
       gap: 14px;
       align-items: end;
     }
@@ -66,6 +66,7 @@
     }
 
     input,
+    select,
     button {
       width: 100%;
       padding: 14px 15px;
@@ -180,8 +181,7 @@
     <section class="hero">
       <h1>Pausenfinder</h1>
       <p class="subtitle">
-        Gib deine PLZ ein und finde direkt auf der Karte passende Orte für die Pause:
-        Restaurants, Cafés, Bäckereien, Supermärkte, Snacks und Take-away.
+        Gib deine PLZ ein, wähle aus, was du suchst, und finde direkt auf der Karte passende Orte für die Pause.
       </p>
     </section>
 
@@ -190,6 +190,21 @@
         <div>
           <label for="zipInput">Postleitzahl</label>
           <input id="zipInput" type="text" placeholder="z. B. 80331" required />
+        </div>
+
+        <div>
+          <label for="categoryInput">Was suchst du?</label>
+          <select id="categoryInput">
+            <option value="Essen Trinken Lebensmittel Mittagspause">Alles</option>
+            <option value="Restaurant Mittagessen">Restaurant</option>
+            <option value="Café Kaffee">Café</option>
+            <option value="Bäckerei Backwaren Sandwich">Bäckerei</option>
+            <option value="Supermarkt Lebensmittel">Supermarkt</option>
+            <option value="Take Away Imbiss Fast Food">Take-away / Imbiss</option>
+            <option value="Kiosk Snack Späti Convenience Store">Snack / Kiosk</option>
+            <option value="Vegetarisches Restaurant vegetarisches Mittagessen">Vegetarisch</option>
+            <option value="Veganes Restaurant veganes Mittagessen">Vegan</option>
+          </select>
         </div>
 
         <button type="submit">Karte anzeigen</button>
@@ -203,18 +218,19 @@
 
     <section class="map-wrap" id="mapWrap">
       <div class="empty-map">
-        Gib oben eine PLZ ein. Danach erscheint hier direkt die Karte mit allen passenden Orten für die Pause.
+        Gib oben eine PLZ ein und wähle eine Kategorie. Danach erscheint hier direkt die Karte.
       </div>
     </section>
 
     <p class="note">
-      Diese Version zeigt alles zusammen an: Restaurants, Cafés, Bäckereien, Supermärkte, Snacks und Take-away. Sie nutzt eine Google-Maps-Suche ohne eigenen API-Key.
+      Hinweis: Die Karte nutzt eine Google-Maps-Suche ohne eigenen API-Key. Die Kategorie „Alles“ ist eine breite Suche; einzelne Kategorien liefern meistens genauere Ergebnisse.
     </p>
   </main>
 
   <script>
     const searchForm = document.getElementById('searchForm');
     const zipInput = document.getElementById('zipInput');
+    const categoryInput = document.getElementById('categoryInput');
     const mapWrap = document.getElementById('mapWrap');
     const mapTitle = document.getElementById('mapTitle');
     const openMapsLink = document.getElementById('openMapsLink');
@@ -226,19 +242,21 @@
 
     function showMap() {
       const zip = zipInput.value.trim();
+      const category = categoryInput.value;
+      const categoryLabel = categoryInput.options[categoryInput.selectedIndex].text;
 
       if (!zip) {
         mapWrap.innerHTML = '<div class="empty-map">Bitte gib zuerst eine PLZ ein.</div>';
         return;
       }
 
-      const searchText = 'Restaurant Café Bäckerei Supermarkt Snack Take Away Mittagessen in der Nähe von ' + zip;
+      const searchText = category + ' in der Nähe von ' + zip;
       const encodedSearch = encodeURIComponent(searchText);
 
       const embedUrl = 'https://www.google.com/maps?q=' + encodedSearch + '&output=embed';
       const mapsUrl = 'https://www.google.com/maps/search/' + encodedSearch;
 
-      mapTitle.textContent = 'Karte für ' + zip;
+      mapTitle.textContent = categoryLabel + ' in der Nähe von ' + zip;
       openMapsLink.href = mapsUrl;
 
       mapWrap.innerHTML = '<iframe title="Pausenfinder Karte" loading="lazy" allowfullscreen src="' + embedUrl + '"></iframe>';
