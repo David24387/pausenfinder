@@ -89,46 +89,20 @@
       background: #1d4ed8;
     }
 
-    .quick-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 16px;
-    }
-
-    .quick-links button {
-      width: auto;
-      background: #eff6ff;
-      color: #1d4ed8;
-      font-size: 14px;
-      padding: 10px 13px;
-    }
-
-    .quick-links button:hover {
-      background: #dbeafe;
-    }
-
-    .map-section {
-      background: #ffffff;
-      border-radius: 22px;
-      padding: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-    }
-
-    .map-head {
+    .map-title-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 12px;
-      margin-bottom: 14px;
+      margin: 28px 4px 14px;
     }
 
-    .map-head h2 {
+    .map-title-row h2 {
       margin: 0;
-      font-size: 24px;
+      font-size: 26px;
     }
 
-    .map-head a {
+    .map-title-row a {
       text-decoration: none;
       background: #eff6ff;
       color: #1d4ed8;
@@ -141,10 +115,11 @@
     .map-wrap {
       width: 100%;
       height: 560px;
-      border-radius: 18px;
+      border-radius: 22px;
       overflow: hidden;
       border: 1px solid #e2e8f0;
-      background: #f8fafc;
+      background: #ffffff;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
     }
 
     iframe {
@@ -165,7 +140,7 @@
     }
 
     .note {
-      margin-top: 12px;
+      margin: 12px 4px 0;
       color: #64748b;
       font-size: 14px;
       line-height: 1.5;
@@ -176,11 +151,11 @@
         grid-template-columns: 1fr;
       }
 
-      .map-head {
+      .map-title-row {
         display: block;
       }
 
-      .map-head a {
+      .map-title-row a {
         display: inline-block;
         margin-top: 12px;
       }
@@ -190,8 +165,7 @@
       }
 
       .hero,
-      .search-box,
-      .map-section {
+      .search-box {
         padding: 22px;
       }
 
@@ -206,7 +180,7 @@
     <section class="hero">
       <h1>Pausenfinder</h1>
       <p class="subtitle">
-        Gib deine PLZ ein und sieh direkt auf der Karte, welche Orte für die Pause in der Nähe sind:
+        Gib deine PLZ ein und finde direkt auf der Karte passende Orte für die Pause:
         Restaurants, Cafés, Bäckereien, Supermärkte, Snacks und Take-away.
       </p>
     </section>
@@ -220,32 +194,22 @@
 
         <button type="submit">Karte anzeigen</button>
       </form>
+    </section>
 
-      <div class="quick-links">
-        <button type="button" data-query="Essen Restaurant Café Bäckerei Supermarkt Take Away">Alles anzeigen</button>
-        <button type="button" data-query="Restaurant Mittagessen Take Away">Mittagessen</button>
-        <button type="button" data-query="Café Bäckerei Kaffee">Café & Bäckerei</button>
-        <button type="button" data-query="Supermarkt Lebensmittel">Supermarkt</button>
-        <button type="button" data-query="Vegan vegetarisch Mittagessen">Vegan / Vegetarisch</button>
+    <div class="map-title-row">
+      <h2 id="mapTitle">Karte</h2>
+      <a id="openMapsLink" href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer">In Google Maps öffnen</a>
+    </div>
+
+    <section class="map-wrap" id="mapWrap">
+      <div class="empty-map">
+        Gib oben eine PLZ ein. Danach erscheint hier direkt die Karte mit allen passenden Orten für die Pause.
       </div>
     </section>
 
-    <section class="map-section">
-      <div class="map-head">
-        <h2 id="mapTitle">Karte</h2>
-        <a id="openMapsLink" href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer">In Google Maps öffnen</a>
-      </div>
-
-      <div class="map-wrap" id="mapWrap">
-        <div class="empty-map">
-          Gib oben eine PLZ ein. Danach erscheint hier direkt die Karte mit passenden Suchergebnissen.
-        </div>
-      </div>
-
-      <p class="note">
-        Hinweis: Diese Version nutzt eine eingebettete Google-Maps-Suche. Sie funktioniert ohne eigenen API-Key und ist deshalb gut für einen ersten GitHub-Pages-Prototyp geeignet.
-      </p>
-    </section>
+    <p class="note">
+      Diese Version zeigt alles zusammen an: Restaurants, Cafés, Bäckereien, Supermärkte, Snacks und Take-away. Sie nutzt eine Google-Maps-Suche ohne eigenen API-Key.
+    </p>
   </main>
 
   <script>
@@ -254,23 +218,13 @@
     const mapWrap = document.getElementById('mapWrap');
     const mapTitle = document.getElementById('mapTitle');
     const openMapsLink = document.getElementById('openMapsLink');
-    const quickButtons = document.querySelectorAll('.quick-links button');
-
-    let currentQuery = 'Essen Restaurant Café Bäckerei Supermarkt Take Away';
 
     searchForm.addEventListener('submit', function(event) {
       event.preventDefault();
-      showMap(currentQuery);
+      showMap();
     });
 
-    quickButtons.forEach(function(button) {
-      button.addEventListener('click', function() {
-        currentQuery = button.dataset.query;
-        showMap(currentQuery);
-      });
-    });
-
-    function showMap(query) {
+    function showMap() {
       const zip = zipInput.value.trim();
 
       if (!zip) {
@@ -278,8 +232,8 @@
         return;
       }
 
-      const fullSearch = query + ' in der Nähe von ' + zip;
-      const encodedSearch = encodeURIComponent(fullSearch);
+      const searchText = 'Restaurant Café Bäckerei Supermarkt Snack Take Away Mittagessen in der Nähe von ' + zip;
+      const encodedSearch = encodeURIComponent(searchText);
 
       const embedUrl = 'https://www.google.com/maps?q=' + encodedSearch + '&output=embed';
       const mapsUrl = 'https://www.google.com/maps/search/' + encodedSearch;
