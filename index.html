@@ -29,7 +29,6 @@
         <div>
           <label for="categoryInput">Was suchst du?</label>
           <select id="categoryInput">
-            <option value="all">Alles</option>
             <option value="restaurant">Restaurant</option>
             <option value="cafe">Café</option>
             <option value="bakery">Bäckerei</option>
@@ -341,19 +340,40 @@ Euromaster GmbH|Industriestraße 5|79183|Waldkirch
     }
 
     async function searchPlaces(lat, lon, category){
-      const rules = categories[category] || categories.all;
-      let query = '[out:json][timeout:25];(';
-      rules.forEach(r => { query += `${r[0]}(around:1000,${lat},${lon});`; });
-      query += ');out center tags 60;';
-      const res = await fetch('https://overpass-api.de/api/interpreter', { method: 'POST', body: query });
-      if(!res.ok) throw new Error('Die Ortssuche ist gerade nicht erreichbar.');
+      const rules = categories[category] || categories.restaurant;
+      const radius = 1800;
+
+      let query = '[out:json][timeout:30];(';
+      rules.forEach(r => {
+        const rule = r[0];
+        query += `${rule}(around:${radius},${lat},${lon});`;
+      });
+      query += ');out center 100;';
+
+      const res = await fetch('https://overpass-api.de/api/interpreter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: query
+      });
+
+      if(!res.ok) throw new Error('Die Ortssuche ist gerade nicht erreichbar. Bitte später erneut versuchen.');
+
       const data = await res.json();
-      return data.elements.map(e => ({
-        name: e.tags && e.tags.name ? e.tags.name : 'Ort ohne Namen',
-        lat: e.lat || (e.center && e.center.lat),
-        lon: e.lon || (e.center && e.center.lon),
-        tags: e.tags || {}
-      })).filter(p => p.lat && p.lon).slice(0,60);
+
+      const seen = new Set();
+      return data.elements.map(e => {
+        const latValue = e.lat || (e.center && e.center.lat);
+        const lonValue = e.lon || (e.center && e.center.lon);
+        const key = `${latValue},${lonValue},${e.tags && e.tags.name ? e.tags.name : ''}`;
+        if(seen.has(key)) return null;
+        seen.add(key);
+        return {
+          name: e.tags && e.tags.name ? e.tags.name : 'Ort ohne Namen',
+          lat: latValue,
+          lon: lonValue,
+          tags: e.tags || {}
+        };
+      }).filter(p => p && p.lat && p.lon).slice(0,100);
     }
 
     function placeType(tags){
@@ -383,14 +403,25 @@ Euromaster GmbH|Industriestraße 5|79183|Waldkirch
         euromasterMarker.bindPopup(`<b>Euromaster-Standort</b><br>${escapeHtml(location.street)}<br>${escapeHtml(location.zip + ' ' + location.city)}`).openPopup();
 
         const places = await searchPlaces(pos.lat, pos.lon, categoryInput.value);
+        const bounds = L.latLngBounds([[pos.lat, pos.lon]]);
+
         places.forEach(place => {
           const marker = L.marker([place.lat, place.lon], { icon: placeIcon }).addTo(markerLayer);
           marker.bindPopup(`<b>${escapeHtml(place.name)}</b><br>${escapeHtml(placeType(place.tags))}`);
+          bounds.extend([place.lat, place.lon]);
         });
+
+        if(places.length > 0){
+          map.fitBounds(bounds, { padding: [40, 40], maxZoom: 16 });
+        } else {
+          map.setView([pos.lat, pos.lon], 16);
+        }
 
         mapTitle.textContent = `${categoryLabel} rund um ${location.zip} ${location.city}`;
         openMapsLink.href = `https://www.openstreetmap.org/?mlat=${pos.lat}&mlon=${pos.lon}#map=17/${pos.lat}/${pos.lon}`;
-        statusText.textContent = `${places.length} Ort(e) im Umkreis gefunden. Blau = Euromaster, Orange = Pausen-Orte.`;
+        statusText.textContent = places.length > 0
+          ? `${places.length} Ort(e) im Umkreis gefunden. Blau = Euromaster, Orange = Pausen-Orte.`
+          : `Keine passenden Orte im Umkreis gefunden. Probiere eine andere Kategorie.`;
       }catch(error){
         statusText.textContent = error.message;
       }
