@@ -87,4 +87,259 @@
       font-size: 16px;
     }
 
+    button {
+      border: none;
+      background: #2563eb;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    .results-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin: 8px 4px 14px;
+    }
+
+    .results-title h2 {
+      margin: 0;
+    }
+
+    .hint {
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    .results {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.07);
+    }
+
+    .card h3 {
+      margin: 0 0 8px;
+    }
+
+    .card p {
+      margin: 0 0 16px;
+      color: #64748b;
+    }
+
+    .card a {
+      display: inline-block;
+      text-decoration: none;
+      background: #eff6ff;
+      color: #1d4ed8;
+      font-weight: bold;
+      padding: 10px 12px;
+      border-radius: 999px;
+      margin-right: 8px;
+      margin-bottom: 8px;
+    }
+
+    .empty {
+      grid-column: 1 / -1;
+      background: #ffffff;
+      border: 1px dashed #cbd5e1;
+      border-radius: 18px;
+      padding: 28px;
+      text-align: center;
+      color: #64748b;
+    }
+
+    .info {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      color: #9a3412;
+      border-radius: 16px;
+      padding: 16px;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    @media (max-width: 700px) {
+      .form-grid,
+      .results {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 34px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <section class="hero">
+      <div class="badge">Intranet-Idee</div>
+      <h1>Pausenfinder</h1>
+      <p class="subtitle">
+        Gib deine PLZ ein und finde schnell passende Orte für die Mittagspause:
+        Restaurants, Cafés, Bäckereien, Supermärkte und mehr.
+      </p>
+    </section>
+
+    <section class="search-box">
+      <form id="searchForm" class="form-grid">
+        <div>
+          <label for="zipInput">Postleitzahl</label>
+          <input id="zipInput" type="text" placeholder="z. B. 80331" required />
+        </div>
+
+        <div>
+          <label for="categoryInput">Was suchst du?</label>
+          <select id="categoryInput">
+            <option value="mittagessen">Mittagessen</option>
+            <option value="restaurant">Restaurant</option>
+            <option value="cafe">Café</option>
+            <option value="baeckerei">Bäckerei</option>
+            <option value="supermarkt">Supermarkt</option>
+            <option value="snack">Snack / Kiosk</option>
+            <option value="vegetarisch">Vegetarisch</option>
+            <option value="vegan">Vegan</option>
+          </select>
+        </div>
+
+        <button type="submit">Suchen</button>
+      </form>
+
+      <div class="info">
+        Diese erste Version nutzt Google-Maps-Suchlinks. Dadurch funktioniert sie zuverlässig auf GitHub Pages,
+        ohne API-Key und ohne Server.
+      </div>
+    </section>
+
+    <div class="results-title">
+      <h2>Empfehlungen</h2>
+      <span id="resultCount" class="hint">Noch keine Suche gestartet</span>
+    </div>
+
+    <section id="results" class="results">
+      <div class="empty">Gib eine PLZ ein und starte die Suche.</div>
+    </section>
+  </main>
+
+  <script>
+    const searchForm = document.getElementById('searchForm');
+    const zipInput = document.getElementById('zipInput');
+    const categoryInput = document.getElementById('categoryInput');
+    const results = document.getElementById('results');
+    const resultCount = document.getElementById('resultCount');
+
+    const suggestions = {
+      mittagessen: [
+        'Mittagessen',
+        'Lunch',
+        'Take Away',
+        'Imbiss'
+      ],
+      restaurant: [
+        'Restaurant',
+        'Italienisches Restaurant',
+        'Asiatisches Restaurant',
+        'Burger Restaurant'
+      ],
+      cafe: [
+        'Café',
+        'Kaffee',
+        'Coffee Shop',
+        'Frühstück'
+      ],
+      baeckerei: [
+        'Bäckerei',
+        'Backwaren',
+        'Sandwich',
+        'Brezel'
+      ],
+      supermarkt: [
+        'Supermarkt',
+        'REWE',
+        'EDEKA',
+        'Lidl'
+      ],
+      snack: [
+        'Kiosk',
+        'Späti',
+        'Snack',
+        'Convenience Store'
+      ],
+      vegetarisch: [
+        'Vegetarisches Restaurant',
+        'Vegetarisches Mittagessen',
+        'Salatbar',
+        'Bowls'
+      ],
+      vegan: [
+        'Veganes Restaurant',
+        'Veganes Mittagessen',
+        'Vegan Café',
+        'Vegane Bowls'
+      ]
+    };
+
+    searchForm.addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const zip = zipInput.value.trim();
+      const category = categoryInput.value;
+
+      if (!zip) {
+        showEmpty('Bitte gib zuerst eine PLZ ein.');
+        return;
+      }
+
+      const items = suggestions[category] || suggestions.mittagessen;
+      showResults(zip, items);
+    });
+
+    function showResults(zip, items) {
+      resultCount.textContent = items.length + ' Vorschläge';
+
+      results.innerHTML = items.map(function(item) {
+        const searchText = item + ' in der Nähe von ' + zip;
+        const mapsUrl = 'https://www.google.com/maps/search/' + encodeURIComponent(searchText);
+
+        return `
+          <article class="card">
+            <h3>${escapeHtml(item)}</h3>
+            <p>Suche passende Orte in der Nähe von <strong>${escapeHtml(zip)}</strong>.</p>
+            <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer">In Google Maps öffnen</a>
+          </article>
+        `;
+      }).join('');
+    }
+
+    function showEmpty(message) {
+      resultCount.textContent = 'Keine Ergebnisse';
+      results.innerHTML = '<div class="empty">' + escapeHtml(message) + '</div>';
+    }
+
+    function escapeHtml(text) {
+      return String(text).replace(/[&<>'"]/g, function(char) {
+        return {
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          "'": '&#39;',
+          '"': '&quot;'
+        }[char];
+      });
+    }
+  </script>
+</body>
 </html>
