@@ -235,7 +235,7 @@
   <script>
     const rawLocations = `
 Zentrale Mannheim|Theodor-Heuss-Anlage 12a|68165|Mannheim
-Zentrale Frankfurt|The Squaire 17 Am Flughafen|60549|Frankfurt am Main
+Zentrale Frankfurt|The Squaire 17, Am Flughafen|60549|Frankfurt am Main|50.0526692|8.5681724
 Euromaster GmbH|Neumann-Reichardt-Str. 36a|22041|Hamburg
 Euromaster GmbH|Alte Heerstr. 1|28259|Bremen
 Euromaster GmbH|Industrie Str. 13|27711|Osterholz-Scharmbeck
@@ -434,9 +434,18 @@ Euromaster GmbH|Industriestraße 5|79183|Waldkirch
 `;
 
     const locations = rawLocations.trim().split('\n').map(line => {
-      const [name, street, zip, city] = line.split('|');
-      return { name, street, zip, city, label: `${zip} ${city} – ${street}` };
-    });
+  const [name, street, zip, city, lat, lon] = line.split('|');
+
+  return {
+    name,
+    street,
+    zip,
+    city,
+    lat: lat ? Number(lat) : null,
+    lon: lon ? Number(lon) : null,
+    label: `${zip} ${city} – ${street}`
+  };
+});
 
     const categories = {
       restaurant: [['node[amenity=restaurant]', 'Restaurant'], ['way[amenity=restaurant]', 'Restaurant']],
@@ -531,20 +540,27 @@ Euromaster GmbH|Industriestraße 5|79183|Waldkirch
     }
 
     async function geocodeLocation(location){
-      const q = `${location.street}, ${location.zip} ${location.city}, Deutschland`;
-      const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(q)}`;
-      const res = await fetch(url,{headers:{Accept:'application/json'}});
-      const data = await res.json();
+  if(location.lat && location.lon){
+    return {
+      lat: location.lat,
+      lon: location.lon
+    };
+  }
 
-      if(!data.length){
-        throw new Error('Der Standort konnte nicht geocodiert werden.');
-      }
+  const q = `${location.street}, ${location.zip} ${location.city}, Deutschland`;
+  const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(q)}`;
+  const res = await fetch(url,{headers:{Accept:'application/json'}});
+  const data = await res.json();
 
-      return {
-        lat:Number(data[0].lat),
-        lon:Number(data[0].lon)
-      };
-    }
+  if(!data.length){
+    throw new Error('Der Standort konnte nicht geocodiert werden.');
+  }
+
+  return {
+    lat:Number(data[0].lat),
+    lon:Number(data[0].lon)
+  };
+}
 
     async function searchPlaces(lat,lon,category){
       const rules = categories[category] || categories.restaurant;
