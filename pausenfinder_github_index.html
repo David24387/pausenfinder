@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pausen-Finder</title>
+  <style>
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#f6f7fb;color:#172033}.wrap{max-width:1050px;margin:auto;padding:32px 18px}.hero,.box,.card{background:white;border:1px solid #e2e8f0;border-radius:24px;box-shadow:0 12px 36px rgba(15,23,42,.07)}.hero{padding:30px;margin-bottom:18px}.box{padding:18px;margin-bottom:22px}h1{margin:0 0 10px;font-size:clamp(34px,6vw,56px);letter-spacing:-.05em}.sub{margin:0;color:#64748b;font-size:18px}.badge{display:inline-block;background:#eff6ff;color:#1d4ed8;padding:8px 12px;border-radius:999px;font-weight:700;margin-bottom:14px}.grid{display:grid;grid-template-columns:1.2fr 1fr 1fr auto;gap:12px;align-items:end}label{display:block;font-size:13px;font-weight:700;margin-bottom:7px;color:#334155}input,select,button{width:100%;padding:13px 14px;border-radius:14px;border:1px solid #e2e8f0;font:inherit;font-size:16px}button{border:0;background:#2563eb;color:white;font-weight:800;cursor:pointer;white-space:nowrap}button:hover{background:#1d4ed8}.status{margin-top:14px;color:#64748b;min-height:22px}.error{color:#b91c1c}.head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin:24px 4px 12px}.head h2{margin:0}.hint{color:#64748b;font-size:14px}.results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.card{padding:18px}.top{display:flex;justify-content:space-between;gap:10px}.card h3{margin:0 0 10px;font-size:18px}.tag{background:#f1f5f9;color:#334155;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:800;white-space:nowrap}.meta{display:grid;gap:6px;color:#64748b;font-size:14px;margin:12px 0}.link{display:inline-flex;text-decoration:none;background:#eff6ff;color:#1d4ed8;border-radius:999px;padding:9px 11px;font-weight:800;font-size:14px;margin-right:6px}.empty{grid-column:1/-1;text-align:center;color:#64748b;background:white;border:1px dashed #cbd5e1;border-radius:22px;padding:28px}@media(max-width:850px){.grid,.results{grid-template-columns:1fr 1fr}}@media(max-width:620px){.grid,.results{grid-template-columns:1fr}.hero{padding:22px}.head{display:block}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="badge">Intranet-Prototyp</div>
+      <h1>Pausen-Finder</h1>
+      <p class="sub">PLZ eingeben und Restaurants, Cafés, Bäckereien, Supermärkte oder Take-away-Orte für die Pause finden.</p>
+    </section>
+
+    <section class="box">
+      <form id="form" class="grid">
+        <div><label for="plz">PLZ</label><input id="plz" placeholder="z. B. 80331" autocomplete="postal-code" required></div>
+        <div><label for="category">Kategorie</label><select id="category"><option value="all">Alles</option><option value="restaurant">Restaurants</option><option value="cafe">Cafés</option><option value="bakery">Bäckereien</option><option value="supermarket">Supermärkte</option><option value="fast_food">Fast Food / Take-away</option><option value="convenience">Kiosk / Convenience</option></select></div>
+        <div><label for="radius">Umkreis</label><select id="radius"><option value="500">500 m</option><option value="1000" selected>1 km</option><option value="1500">1,5 km</option><option value="2500">2,5 km</option></select></div>
+        <button id="btn">Suchen</button>
+      </form>
+      <div id="status" class="status">Für GitHub Pages geeignet: einfach als <b>index.html</b> hochladen.</div>
+    </section>
+
+    <div class="head"><h2>Empfehlungen</h2><span id="count" class="hint">Noch keine Suche gestartet</span></div>
+    <section id="results" class="results"><div class="empty">Starte eine Suche.</div></section>
+  </main>
+
+<script>
+const form=document.querySelector('#form'),results=document.querySelector('#results'),statusEl=document.querySelector('#status'),countEl=document.querySelector('#count'),btn=document.querySelector('#btn');
+const labels={restaurant:'Restaurant',cafe:'Café',bakery:'Bäckerei',supermarket:'Supermarkt',fast_food:'Take-away',convenience:'Kiosk'};
+const queries={
+  restaurant:'node[amenity=restaurant]', cafe:'node[amenity=cafe]', bakery:'node[shop=bakery]', supermarket:'node[shop=supermarket]', fast_food:'node[amenity=fast_food]', convenience:'node[shop=convenience]'
+};
+function km(a,b,c,d){const R=6371,toRad=x=>x*Math.PI/180;const dLat=toRad(c-a),dLon=toRad(d-b);const x=Math.sin(dLat/2)**2+Math.cos(toRad(a))*Math.cos(toRad(c))*Math.sin(dLon/2)**2;return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));}
+function typeOf(tags){if(tags.amenity==='restaurant')return'restaurant';if(tags.amenity==='cafe')return'cafe';if(tags.amenity==='fast_food')return'fast_food';if(tags.shop==='bakery')return'bakery';if(tags.shop==='supermarket')return'supermarket';if(tags.shop==='convenience')return'convenience';return'all'}
+async function geocode(plz){const url=`https://nominatim.openstreetmap.org/search?format=json&countrycodes=de&postalcode=${encodeURIComponent(plz)}&limit=1`;const res=await fetch(url,{headers:{'Accept':'application/json'}});const data=await res.json();if(!data.length)throw new Error('PLZ nicht gefunden.');return{lat:+data[0].lat,lon:+data[0].lon,name:data[0].display_name};}
+async function searchPlaces(lat,lon,radius,category){let parts=category==='all'?Object.values(queries):[queries[category]];let body='[out:json][timeout:25];(';for(const p of parts)body+=`${p}(around:${radius},${lat},${lon});`;body+=');out center 40;';const res=await fetch('https://overpass-api.de/api/interpreter',{method:'POST',body});if(!res.ok)throw new Error('Die Ortssuche ist gerade nicht erreichbar.');const data=await res.json();return data.elements.map(e=>({name:e.tags?.name||'Unbenannter Ort',lat:e.lat||e.center?.lat,lon:e.lon||e.center?.lon,tags:e.tags||{}})).filter(p=>p.lat&&p.lon).map(p=>({...p,type:typeOf(p.tags),dist:km(lat,lon,p.lat,p.lon)})).sort((a,b)=>a.dist-b.dist).slice(0,24);}
+function render(items){if(!items.length){results.innerHTML='<div class="empty">Keine passenden Orte gefunden. Probiere einen größeren Umkreis.</div>';countEl.textContent='0 Ergebnisse';return;}countEl.textContent=`${items.length} Ergebnisse`;results.innerHTML=items.map(p=>`<article class="card"><div class="top"><h3>${escapeHtml(p.name)}</h3><span class="tag">${labels[p.type]||'Ort'}</span></div><div class="meta"><span>📍 ${Math.round(p.dist*1000)} m entfernt</span><span>${p.tags['addr:street']?escapeHtml(p.tags['addr:street']):'Adresse nicht hinterlegt'}</span></div><a class="link" target="_blank" href="https://www.openstreetmap.org/?mlat=${p.lat}&mlon=${p.lon}#map=18/${p.lat}/${p.lon}">Karte</a><a class="link" target="_blank" href="https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lon}">Route</a></article>`).join('');}
+function escapeHtml(s){return String(s).replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m]));}
+form.addEventListener('submit',async e=>{e.preventDefault();btn.disabled=true;statusEl.className='status';statusEl.textContent='Suche läuft ...';results.innerHTML='<div class="empty">Lade Empfehlungen ...</div>';try{const plz=document.querySelector('#plz').value.trim();const category=document.querySelector('#category').value;const radius=document.querySelector('#radius').value;const pos=await geocode(plz);const places=await searchPlaces(pos.lat,pos.lon,radius,category);statusEl.textContent=`Standort gefunden: ${pos.name}`;render(places);}catch(err){statusEl.className='status error';statusEl.textContent=err.message;results.innerHTML='<div class="empty">Es ist ein Fehler aufgetreten.</div>';countEl.textContent='Keine Ergebnisse';}finally{btn.disabled=false;}});
+</script>
+</body>
+</html>
