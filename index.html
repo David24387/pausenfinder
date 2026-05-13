@@ -407,7 +407,8 @@ Euromaster GmbH|Industriestraße 5|79183|Waldkirch
 
         places.forEach(place => {
           const marker = L.marker([place.lat, place.lon], { icon: placeIcon }).addTo(markerLayer);
-          const routeUrl = `https://www.google.com/maps/dir/?api=1&origin=${pos.lat},${pos.lon}&destination=${place.lat},${place.lon}&travelmode=walking`;
+          const encodedOrigin = encodeURIComponent(location.street + ', ' + location.zip + ' ' + location.city);
+          const routeUrl = `https://www.google.com/maps/dir/?api=1&origin=${encodedOrigin}&destination=${place.lat},${place.lon}&travelmode=walking`;
           marker.bindPopup(`<b>${escapeHtml(place.name)}</b><br>${escapeHtml(placeType(place.tags))}<br><br><a href="${routeUrl}" target="_blank" rel="noopener noreferrer">Route öffnen</a>`);
           bounds.extend([place.lat, place.lon]);
         });
@@ -435,4 +436,3 @@ Euromaster GmbH|Industriestraße 5|79183|Waldkirch
   </script>
 </body>
 </html>
-
