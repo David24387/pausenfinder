@@ -562,48 +562,104 @@ Euromaster GmbH|Industriestraße 5|79183|Waldkirch
   };
 }
 
-    async function searchPlaces(lat,lon,category){
-      const rules = categories[category] || categories.restaurant;
-      const radius = 1800;
+async function searchPlaces(lat, lon, category){
+  const rules = categories[category] || categories.restaurant;
+  const radius = 1800;
 
-      let query = '[out:json][timeout:30];(';
+  let query = '[out:json][timeout:30];(';
 
-      rules.forEach(r => {
-        query += `${r[0]}(around:${radius},${lat},${lon});`;
-      });
+  rules.forEach(r => {
+    query += `
+      ${r[0]}
+        ["name"]
+        ["opening_hours"!="closed"]
+        ["disused"!="yes"]
+        ["abandoned"!="yes"]
+        ["demolished"!="yes"]
+        ["closed"!="yes"]
+        ["vacant"!="yes"]
+        ["temporary"!="yes"]
+        ["fixme"!~"closed|abandoned|demolished",i]
+        ["description"!~"geschlossen|closed|abandoned",i]
+        ["disused:amenity"!~".*"]
+        ["abandoned:amenity"!~".*"]
+        ["demolished:amenity"!~".*"]
+        ["former:amenity"!~".*"]
+        ["was:amenity"!~".*"]
+        ["disused:shop"!~".*"]
+        ["abandoned:shop"!~".*"]
+        ["demolished:shop"!~".*"]
+        ["former:shop"!~".*"]
+        ["was:shop"!~".*"]
+        (around:${radius},${lat},${lon});
+    `;
+  });
 
-      query += ');out center 100;';
+  query += ');out center 100;';
 
-      const res = await fetch('https://overpass-api.de/api/interpreter',{
-        method:'POST',
-        headers:{'Content-Type':'text/plain'},
-        body:query
-      });
+  const res = await fetch('https://overpass-api.de/api/interpreter',{
+    method:'POST',
+    headers:{'Content-Type':'text/plain'},
+    body:query
+  });
 
-      if(!res.ok){
-        throw new Error('Die Ortssuche ist gerade nicht erreichbar. Bitte später erneut versuchen.');
-      }
+  if(!res.ok){
+    throw new Error('Die Ortssuche ist gerade nicht erreichbar. Bitte später erneut versuchen.');
+  }
 
-      const data = await res.json();
-      const seen = new Set();
+  const data = await res.json();
+  const seen = new Set();
 
-      return data.elements.map(e => {
-        const latValue = e.lat || e.center?.lat;
-        const lonValue = e.lon || e.center?.lon;
-        const name = e.tags?.name || 'Ort ohne Namen';
-        const key = `${latValue},${lonValue},${name}`;
+  return data.elements.map(e => {
+    const latValue = e.lat || e.center?.lat;
+    const lonValue = e.lon || e.center?.lon;
+    const tags = e.tags || {};
+    const name = tags.name || '';
 
-        if(seen.has(key)) return null;
-        seen.add(key);
+    // Nur Orte mit Namen anzeigen
+    if(!name) return null;
 
-        return {
-          name,
-          lat:latValue,
-          lon:lonValue,
-          tags:e.tags || {}
-        };
-      }).filter(p => p && p.lat && p.lon).slice(0,100);
-    }
+    // Zusätzliche Sicherheitsprüfung
+    const closedIndicators = [
+      tags.opening_hours === 'closed',
+      tags.disused === 'yes',
+      tags.abandoned === 'yes',
+      tags.demolished === 'yes',
+      tags.closed === 'yes',
+      tags.vacant === 'yes',
+      tags.temporary === 'yes',
+
+      tags['disused:amenity'],
+      tags['abandoned:amenity'],
+      tags['demolished:amenity'],
+      tags['former:amenity'],
+      tags['was:amenity'],
+
+      tags['disused:shop'],
+      tags['abandoned:shop'],
+      tags['demolished:shop'],
+      tags['former:shop'],
+      tags['was:shop']
+    ];
+
+    if(closedIndicators.some(Boolean)) return null;
+
+    // Duplikate verhindern
+    const key = `${latValue},${lonValue},${name}`;
+
+    if(seen.has(key)) return null;
+    seen.add(key);
+
+    return {
+      name,
+      lat: latValue,
+      lon: lonValue,
+      tags
+    };
+  })
+  .filter(p => p && p.lat && p.lon)
+  .slice(0,100);
+}
 
     function placeType(tags){
       if(tags.amenity === 'restaurant') return 'Restaurant';
